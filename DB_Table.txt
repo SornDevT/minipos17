@@ -1,0 +1,45 @@
+
+All Table
+
+    1. Table: User
+        Fill            Fill Type
+        - name          string 
+        - email         string 
+        - password      string 
+
+    2. Table: Store                         CRUD 
+        Fill            Fill Type
+        - name          string 
+        - image         string
+        - qty           integer
+        - price_buy     integer 
+        - price_sell    integer
+
+    3. Table: Transection 
+        Fill            Fill Type
+        - tran_id       string 
+        - tran_type     string
+        - product_id    integer
+        - qty           integer
+        - price         integer
+        - detail        string
+
+    4. Table: Bill 
+        Fill            Fill Type
+        - bill_id       string 
+        - customer_name string 
+        - customer_tel  string
+
+    5. Table: Bill_list 
+        Fill            Fill Type
+        - bill_id       string
+        - name          string 
+        - qty           integer
+        - price         integer
+
+
+List Controller 
+    - StoreController
+    - UserController
+    - TransectionController
+    - ReportController
