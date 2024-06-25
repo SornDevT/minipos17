@@ -18,7 +18,7 @@
           <!-- /Logo -->
           <h4 class="mb-2">ສະບາຍດີ! 👋</h4>
           <p class="mb-4">ກະລຸນາເຂົ້າສູ່ລະບົບ</p>
-          {{ UserLogin }}
+          <!-- {{ UserLogin }} -->
           
             <div class="mb-3">
               <label for="email" class="form-label fs-6">ອີເມວລ໌:</label>
@@ -30,8 +30,14 @@
                 
               </div>
               <div class="input-group input-group-merge">
-                <input type="password" id="password" v-model="UserLogin.password" class="form-control" name="password" placeholder="············" aria-describedby="password">
-                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                <input :type="showpass" id="password" v-model="UserLogin.password" @keyup.enter="Login" class="form-control"  name="password" placeholder="············" aria-describedby="password">
+               <!-- ແບບ ຫຍໍ້ -->
+                <span class="input-group-text cursor-pointer" @click="showpass=='password'?showpass='text':showpass='password'"> 
+                <!-- ແບບ ຟັ່ງຊັ່ນ -->
+                  <!-- <span class="input-group-text cursor-pointer" @click="SHPass">  -->
+                  <i class="bx bx-show" v-if="showpass=='text'"></i>
+                  <i class="bx bx-hide" v-if="showpass=='password'"></i>
+                </span>
               </div>
             </div>
 
@@ -68,7 +74,8 @@ export default {
         },
         text_error_email:'',
         text_error_password:'',
-        text_error_login:''
+        text_error_login:'',
+        showpass:'password'
       }
     },
     computed:{
@@ -107,6 +114,13 @@ export default {
         }
     },
     methods:{
+      SHPass(){
+          if(this.showpass == 'password'){
+            this.showpass = 'text'
+          } else {
+            this.showpass = 'password'
+          }
+      },
       Login(){
           if(this.UserLogin.email !="" && this.UserLogin.password !=""){
               axios.post("api/login",this.UserLogin).then((res)=>{
@@ -115,6 +129,15 @@ export default {
                   this.UserLogin.email = ""
                   this.UserLogin.password = ""
                   this.text_error_login = ""
+
+                  // ບັນທຶກຂໍ້ມູນລົງໃນ localstorage
+                  localStorage.setItem("web_token",res.data.token)
+                  localStorage.setItem("web_user",JSON.stringify(res.data.user_data))
+
+                  // ໄປໜ້າທຳອິດ
+                  this.$router.push('/')
+
+
                 } else {
                   this.text_error_login = res.data.message
                 }

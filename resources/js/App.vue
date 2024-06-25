@@ -129,10 +129,10 @@
               <li>
                 <div class="dropdown-divider"></div>
               </li>
-              <li>
-                <a class="dropdown-item" href="javascript:void(0);">
+              <li> 
+                <a class="dropdown-item" @click="LogOut" href="javascript:void(0);">
                   <i class="bx bx-power-off me-2"></i>
-                  <span class="align-middle">Log Out</span>
+                  <span class="align-middle">ອອກຈາກລະບົບ</span>
                 </a>
               </li>
             </ul>
@@ -170,7 +170,7 @@
           
 
 <!-- Footer -->
-<footer class="content-footer footer bg-footer-theme" v-if="store.get_token"> Token: {{ store.get_token }}
+<footer class="content-footer footer bg-footer-theme" v-if="store.get_token"> 
   <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
     <div class="mb-2 mb-md-0">
       © 
@@ -216,12 +216,35 @@
   
 </template>
 <script>
+import axios from "axios";
 import { useStore } from "./Store/auth"
 export default {
     setup() {
       const store = useStore();
       return { store }
-    }
+    },
+    methods: {
+      LogOut(){
+          axios.get("api/logout",{ headers: { Authorization:'Bearer '+this.store.get_token }
+        }).then((res)=>{
+            if(res.data.success){
+              // ເຄຼຍຂໍ້ມູນໃນ Localstorage
+              localStorage.removeItem("web_token")
+              localStorage.removeItem("web_user")
+
+            // ເຄຍຂໍ້ມູນມໃນ Pinia
+            this.store.remove_token()
+            this.store.remove_user
+
+            // ໄປໜ້າ login
+            this.$router.push("/login")
+
+            }
+        }).catch((error)=>{
+          console.log(error)
+        })
+      }
+    },
 }
 </script>
 <style lang="">

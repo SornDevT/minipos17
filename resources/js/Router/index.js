@@ -23,6 +23,10 @@ export const routes = [
         component: Register
     },
     {
+        path:"/",
+        redirect: "/store"
+    },
+    {
         name: "store",
         path: "/store",
         component: Store,
@@ -91,8 +95,8 @@ router.beforeEach((to,from,next)=>{
         }
 
     } else {
-        // store.remove_token()
-        // store.remove_user()
+        store.remove_token()
+        store.remove_user()
     }
 
     if(to.meta.requiresAuth){
