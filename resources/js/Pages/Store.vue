@@ -10,8 +10,10 @@
             <button type="button" class="btn btn-danger" @click="CancelStore" >ຍົກເລີກ</button>
         </div>
         <div class="row">
-            <div class="col-md-4">
-                Image
+            <div class="col-md-4 text-center">
+           
+                <img :src="ImagePreview" @click="$refs.img_store.click()" class=" cursor-pointer" style=" width:60%" >
+                <input type="file" ref="img_store" style="display:none" @change="onSelect" >
             </div>
             <div class="col-md-8">
           
@@ -19,7 +21,7 @@
           <input type="text" class="form-control mb-2" v-model="FormStore.name" id="product-name" placeholder="..." >
 
           <label for="product-qty" class="form-label fs-6">ຈຳນວນ:</label>
-          <input type="text" class="form-control mb-2" v-model="FormStore.qty" id="product-qty" placeholder="..." >
+          <cleave :options="options" class="form-control mb-2" v-model="FormStore.qty" id="product-qty" placeholder="..." />
                 
           <div class="row">
             <div class="col-md-6">
@@ -27,7 +29,7 @@
           <label for="price-buy" class="form-label fs-6">ລາຄາຊື້:</label>
           
           <div class="input-group">
-            <input type="text" class="form-control" v-model="FormStore.price_buy" id="price-buy" placeholder="..." >
+            <cleave :options="options" class="form-control" v-model="FormStore.price_buy" id="price-buy" placeholder="..." />
             <span class="input-group-text">ກີບ</span>
         </div>
             </div>
@@ -35,7 +37,7 @@
                 
           <label for="price-sell" class="form-label fs-6">ລາຄາຂາຍ:</label>
           <div class="input-group">
-            <input type="text" class="form-control" v-model="FormStore.price_sell" id="price-sell" placeholder="..." >
+            <cleave :options="options" class="form-control" v-model="FormStore.price_sell" id="price-sell" placeholder="..." />
             <span class="input-group-text">ກີບ</span>
         </div>
             </div>
@@ -88,7 +90,11 @@
        
           <tr v-for="item in StoreData.data" :key="item.id">
             <td>{{item.id}}</td>
-            <td>image</td>
+            <td> 
+
+              <img :src="url + '/assets/img/' + item.image" v-if="item.image" class=" rounded border" style="width:60px">
+              <img :src="url + '/assets/img/no-img.png'" v-else class=" rounded border" style="width:60px">
+            </td>
             <td>{{ item.name }}</td>
             <td>{{ item.qty }}</td>
             <td>{{ item.price_buy }}</td>
@@ -106,7 +112,8 @@
       </table>
 
       <Pagination :pagination="StoreData" :offset="4" @paginate="GetStore($event)" />
-
+      <button @click="showAlert">Hello world</button>
+      
     </div>
   </div>
 </div>
@@ -121,6 +128,8 @@ export default {
     },
     data() {
         return {
+            url: window.location.origin,
+            ImagePreview: window.location.origin + "/assets/img/upload-img.jpg",
             Sort:'desc',
             PerPage: 5,
             ShowForm:false,
@@ -135,6 +144,16 @@ export default {
             },
             FormType: true,
             EditID:'',
+            options: {
+                  numeral: true,
+                  numeralPositiveOnly: true,
+                  noImmediatePrefix: true,
+                  rawValueTrimPrefix: true,
+                  numeralIntegerScale: 10,
+                  numeralDecimalScale: 2,
+                  numeralDecimalMark: '.',
+                  delimiter: ','
+                }
         }
     },
     computed:{
@@ -147,6 +166,37 @@ export default {
         }
     },
     methods: {
+      onSelect(event){
+        console.log(event.target.files[0])
+        this.FormStore.image = event.target.files[0]
+
+         let reader = new FileReader()
+            reader.readAsDataURL(this.FormStore.image)
+            reader.addEventListener("load", function(){
+                this.ImagePreview = reader.result
+            }.bind(this,false))
+
+      },
+      showAlert() {
+      // Use sweetalert2
+      // this.$swal({
+      //   icon: "error",
+      //   title: "Oops...",
+      //   text: "Something went wrong!",
+      //   footer: '<a href="#">Why do I have this issue?</a>'
+      // });
+
+      this.$swal({
+                                position:'top-end',
+                                toast:true,
+                                title: 'res.data.message',
+                                showConfirmButton: false,
+                                icon:"success",
+                                timer:2500
+                            });
+
+
+    },
       ChangeSort(){
           if(this.Sort == 'desc'){
             this.Sort = 'asc'
@@ -158,7 +208,7 @@ export default {
         AddStore(){
             this.ShowForm = true
             this.FormType = true
-
+            this.ImagePreview = window.location.origin + "/assets/img/upload-img.jpg"
             this.FormStore.name = ""
             this.FormStore.image = ""
             this.FormStore.qty = ""
@@ -192,9 +242,40 @@ export default {
 
         },
         DelStore(id){
-            axios.delete(`api/store/delete/${id}`,{ headers: { Authorization:"Bearer "+this.store.get_token }}).then((res)=>{
+
+          this.$swal({
+            title: "ທ່ານແນ່ໃຈບໍ່?",
+            text: "ທີ່ຈະລຶບຂໍ້ມູນນີ້!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ຍຶນຍັນ",
+            cancelButtonText:  "ຍົກເລີກ"
+          }).then((result) => {
+            if (result.isConfirmed) {
+
+
+               axios.delete(`api/store/delete/${id}`,{ headers: { Authorization:"Bearer "+this.store.get_token }}).then((res)=>{
                 if(res.data.success){
                   this.GetStore()
+
+                  this.$swal({
+                    title: "ການລຶບຂໍ້ມູນ!",
+                    text: res.data.message,
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer:2500
+                  });
+
+
+                } else {
+                  this.$swal({
+                                title: res.data.message,
+                                showConfirmButton: false,
+                                icon:"error",
+                                timer:3500
+                            });
                 }
             }).catch((error)=>{
               if(error.response.status == 401){
@@ -207,16 +288,39 @@ export default {
                 this.$router.push("/login")
               }
             })
+
+             
+            }
+          })
+          
+           
         },
         SaveStore(){
 
             if(this.FormType){
                 // ເພີ່ມຂໍ້ມູນໃໝ່
 
-                axios.post("api/store/add",this.FormStore, { headers: { Authorization:"Bearer "+this.store.get_token }}).then((res)=>{
+                axios.post("api/store/add",this.FormStore, { headers: { "Content-Type":"multipart/form-data", Authorization:"Bearer "+this.store.get_token }}).then((res)=>{
                     if(res.data.success){
                       this.ShowForm = false
                       this.GetStore()
+
+                      this.$swal({
+                                position:'top-end',
+                                toast:true,
+                                title: res.data.message,
+                                showConfirmButton: false,
+                                icon:"success",
+                                timer:2500
+                            });
+                      
+                    } else {
+                      this.$swal({
+                                title: res.data.message,
+                                showConfirmButton: false,
+                                icon:"error",
+                                timer:3500
+                            });
                     }
                 }).catch((error)=>{
                     console.log(error)
@@ -235,12 +339,27 @@ export default {
             } else {
                 // ອັບເດດຂໍ້ມູນ
 
-                axios.post(`api/store/update/${this.EditID}`, this.FormStore,{ headers: { Authorization:"Bearer "+this.store.get_token } }).then((res)=>{
+                axios.post(`api/store/update/${this.EditID}`, this.FormStore,{ headers: { "Content-Type":"multipart/form-data", Authorization:"Bearer "+this.store.get_token } }).then((res)=>{
                     if(res.data.success){
 
                       this.ShowForm = false 
                       this.GetStore()
+                      this.$swal({
+                                position:'top-end',
+                                toast:true,
+                                title: res.data.message,
+                                showConfirmButton: false,
+                                icon:"success",
+                                timer:2500
+                            });
 
+                    } else {
+                      this.$swal({
+                                title: res.data.message,
+                                showConfirmButton: false,
+                                icon:"error",
+                                timer:3500
+                            });
                     }
 
 
