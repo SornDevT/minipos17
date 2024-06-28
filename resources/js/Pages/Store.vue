@@ -10,8 +10,12 @@
             <button type="button" class="btn btn-danger" @click="CancelStore" >ຍົກເລີກ</button>
         </div>
         <div class="row">
-            <div class="col-md-4 text-center">
-           
+            <div class="col-md-4 text-center" style=" position:relative">
+
+              <button type="button" class="btn rounded-pill btn-icon btn-danger" @click="RemoveImg" v-if="FormStore.image" style="position: absolute;right: 20px; top: 10px;">
+                <i class='bx bx-x fs-4' ></i>
+              </button>
+
                 <img :src="ImagePreview" @click="$refs.img_store.click()" class=" cursor-pointer" style=" width:60%" >
                 <input type="file" ref="img_store" style="display:none" @change="onSelect" >
             </div>
@@ -97,7 +101,7 @@
             </td>
             <td>{{ item.name }}</td>
             <td>{{ item.qty }}</td>
-            <td>{{ item.price_buy }}</td>
+            <td class="text-end">{{ formatPrice(item.price_buy) }} ກີບ</td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -166,6 +170,14 @@ export default {
         }
     },
     methods: {
+      formatPrice(value) {
+            let val = (value / 1).toFixed(0).replace(",", ".");
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+      RemoveImg(){
+        this.FormStore.image = null 
+        this.ImagePreview = this.url + "/assets/img/upload-img.jpg"
+      },
       onSelect(event){
         console.log(event.target.files[0])
         this.FormStore.image = event.target.files[0]
@@ -227,6 +239,11 @@ export default {
 
               this.FormStore = res.data
               this.ShowForm = true
+              if(res.data.image){
+                this.ImagePreview = this.url + "/assets/img/" + res.data.image
+              } else {
+                this.ImagePreview = this.url + "/assets/img/upload-img.jpg"
+              }
 
             }).catch((error)=>{
               if(error.response.status == 401){

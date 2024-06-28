@@ -93,6 +93,71 @@ class StoreController extends Controller
             
             $store = Store::find($id);
 
+            // ກຳນົດເສັ້ນທາງ ບັນທຶກຮູບພາບ
+            $upload_path = "assets/img";
+
+            // ກວດເບີ່ງມີໄຟລ໌ ຖຶກອັບໂຫຼດມາຫຼືບໍ່
+            if($request->file("image")){
+
+                // ກວດຊື້ໃນຖານຂໍ້ມູນ ຖ້າມີຊື່ໄຟລຮູບ ໃຫ້ທຳການລຶບຮູບພາບ
+                if($store->image){
+                    if(file_exists($upload_path."/".$store->image)){
+                        unlink($upload_path."/".$store->image);
+                    }
+                }
+
+                // ປ່ຽນຊື່ຮູບພາບ
+                $new_name_img = time().".".$request->image->getClientOriginalExtension();
+
+                // ອັບໂຫຼດຮູບພາບ
+                $request->image->move(public_path($upload_path),$new_name_img);
+
+                // ອັບເດດຂໍ້ມູນ
+                $store->update([
+                    "name" => $request->name,
+                    "image" => $new_name_img,
+                    "qty" => $request->qty,
+                    "price_buy" => $request->price_buy,
+                    "price_sell" => $request->price_sell,
+                ]);
+
+            } else {
+
+                if($request->image){  // ບໍ່ມີການອັບໂຫຼດຮູບພາບ
+
+                     // ອັບເດດຂໍ້ມູນ
+                    $store->update([
+                        "name" => $request->name,
+                        // "image" => $new_name_img,
+                        "qty" => $request->qty,
+                        "price_buy" => $request->price_buy,
+                        "price_sell" => $request->price_sell,
+                    ]);
+
+                } else { // ມີການລຶບຮູບພາບ ຫຼື ບໍ່ມີຊື່ຮູບພາບ
+                    
+                    if($store->image){
+                        if(file_exists($upload_path."/".$store->image)){
+                            unlink($upload_path."/".$store->image);
+                        }
+                    }
+
+                     // ອັບເດດຂໍ້ມູນ
+                     $store->update([
+                        "name" => $request->name,
+                        "image" => null,
+                        "qty" => $request->qty,
+                        "price_buy" => $request->price_buy,
+                        "price_sell" => $request->price_sell,
+                    ]);
+
+                }
+               
+            }
+
+
+
+
             $store->update([
                 "name" => $request->name,
                 "qty" => $request->qty,
@@ -122,6 +187,18 @@ class StoreController extends Controller
         try {
             
             $store = Store::find($id);
+
+            // ກຳນົດເສັ້ນທາງ ບັນທຶກຮູບພາບ
+            $upload_path = "assets/img";
+
+            // ກຳການລຶບຮູບພາບ
+            if($store->image){
+                if(file_exists($upload_path."/".$store->image)){
+                    unlink($upload_path."/".$store->image);
+                }
+            }
+
+            // ລຶບຂໍ້ມູນ
             $store->delete();
 
              $success = true;
