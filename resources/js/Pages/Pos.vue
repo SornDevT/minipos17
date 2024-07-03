@@ -4,7 +4,7 @@
             <div class=" card">
                 <div class=" card-body">
                     <div class="input-group">
-                <input type="text" class="form-control " placeholder="ຄົ້ນຫາ...">
+                <input type="text" class="form-control " v-model="Search" @keyup.enter="GetStore(1)" placeholder="ຄົ້ນຫາ...">
                 <button type="button" class="btn btn-primary px-2"  > <i class='bx bx-search-alt fs-5'></i> </button>
               </div>
                 </div>
@@ -219,6 +219,13 @@ export default {
         }
     },
     methods: {
+        async openLink(link){
+            const response = await fetch(`${link}`,{ headers:{ Authorization: 'Bearer '+ this.store.get_token}});
+            const html = await response.text();
+            const blob = new Blob([html],{ type: "text/html"});
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, "_blank");
+        },
         AddNum(num){
             this.CashAmount = parseInt(this.CashAmount?this.CashAmount:0) + parseInt(num) // 100 + 200 = 300
         },
@@ -339,7 +346,8 @@ export default {
 
                         $("#dialog_pay").modal("hide")
 
-
+                        // window.open(window.location.origin+"/api/bills/print/"+res.data.bill_id)
+                        this.openLink(window.location.origin+"/api/bills/print/"+res.data.bill_id)
 
                         this.$swal({
                                 position:'top-end',
@@ -376,6 +384,13 @@ export default {
     created() {
         this.GetStore(1)
     },
+    watch:{
+        Search(){
+            if(this.Search == ""){
+                this.GetStore(1) 
+            }
+        }
+    }
 }
 </script>
 <style >

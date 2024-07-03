@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="assets/css/font_lao.css">
 
         <!-- Core CSS -->
-    <link rel="stylesheet" href="assets/vendor/css/core.css" class="template-customizer-core-css">
-    <link rel="stylesheet" href="assets/vendor/css/theme-default.css" class="template-customizer-theme-css">
-    <link rel="stylesheet" href="assets/css/demo.css">
+    <link rel="stylesheet" href="{{ url('assets/vendor/css/core.css') }}" class="template-customizer-core-css">
+    <link rel="stylesheet" href="{{ url('assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css">
+    <link rel="stylesheet" href="{{ url('assets/css/demo.css') }}">
     
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"> 
-    <link rel="stylesheet" href="assets/vendor/libs/apex-charts/apex-charts.css">
+    <link rel="stylesheet" href="{{ url('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}"> 
+    <link rel="stylesheet" href="{{ url('assets/vendor/libs/apex-charts/apex-charts.css') }}">
 
     @vite('resources/css/app.css')
 </head>
@@ -29,11 +29,11 @@
       <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
   
-  <script src="assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="assets/vendor/libs/popper/popper.js"></script>
-  <script src="assets/vendor/js/bootstrap.js"></script>
-  <script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="assets/vendor/js/menu.js"></script>
+  <script src="{{ url('assets/vendor/libs/jquery/jquery.js') }}"></script>
+  <script src="{{ url('assets/vendor/libs/popper/popper.js') }}"></script>
+  <script src="{{ url('assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="{{ url('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+  <script src="{{ url('assets/vendor/js/menu.js') }}"></script>
 
 
     @vite('resources/js/app.js')
