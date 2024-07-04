@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Store;
+use App\Models\Transection;
 
 class StoreController extends Controller
 {
@@ -64,6 +65,20 @@ class StoreController extends Controller
                 "price_sell" => $request->price_sell
             ]);
             $store->save();
+            $product_id = $store->id;
+
+            // ເພີ່ມທຸລະກຳ ຊື້ສິນຄ້າ
+
+            $tran = new Transection([
+                "tran_id" => date('ym').rand(1000,9999), 
+                "tran_type" => "expense",
+                "product_id" => $product_id,
+                "qty" => $request->qty,
+                "price" => $request->qty*$request->price_buy,
+                "detail" => "ນຳເຂົ້າສິນຄ້າ ".$request->name
+            ]);
+            $tran->save();
+
  
              $success = true;
              $message = 'ບັນທຶກຂໍ້ມູນ ສຳເລັດ!';
