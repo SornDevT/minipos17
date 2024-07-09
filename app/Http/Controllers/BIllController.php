@@ -14,7 +14,8 @@ class BIllController extends Controller
         $this->middleware("auth:api");
     }
 
-    public function created_bill($bill_id){
+    public function print_bill($bill_id){
+
 
         $bill = Bill::where("bill_id",$bill_id)->get();
         $bill_list = Bill_list::where("bill_id",$bill_id)->get();

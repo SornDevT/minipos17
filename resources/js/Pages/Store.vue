@@ -7,7 +7,7 @@
   <div class="card-body">
     <!-- {{ShowForm}} -->
     <div v-if="ShowForm">
-      {{FormStore}}
+      <!-- {{FormStore}} -->
         <div class=" d-flex justify-content-end">
             <button type="button" class="btn btn-success me-2" :disabled="CheckForm" @click="SaveStore">ບັນທຶກ</button>
             <button type="button" class="btn btn-danger" @click="CancelStore" >ຍົກເລີກ</button>
@@ -119,7 +119,7 @@
       </table>
 
       <Pagination :pagination="StoreData" :offset="4" @paginate="GetStore($event)" />
-      <button @click="showAlert">Hello world</button>
+      <!-- <button @click="showAlert">Hello world</button> -->
       
     </div>
   </div>

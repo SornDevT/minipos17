@@ -59,7 +59,7 @@
                                 <tbody>
                                     <tr v-for="list in ListOrder" :key="list.id">
                                         <td class="p-1 d-flex">
-                                            <img src="assets/img/upload-img.jpg" class="list-img-pos">
+                                            <img :src="url + '/assets/img/upload-img.jpg'" class="list-img-pos">
                                             <div class="px-3 w-100">
                                                 <span>{{list.name}}</span>
                                                 <div class=" d-flex justify-content-end">{{ list.order_qty }} x {{ list.price_sell }}</div>

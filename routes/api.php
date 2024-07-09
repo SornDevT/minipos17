@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TransectionController;
-use App\Http\Controllers\BillController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BIllController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +44,10 @@ Route::controller(TransectionController::class)->group(function(){
     // Route::delete("transection/delete/{id}","delete");
 });
 
-Route::controller(BillController::class)->group(function(){
-    Route::get("bills/print/{id}","created_bill");
+Route::controller(BIllController::class)->group(function(){
+    Route::get("bills/print/{id}","print_bill");
 });
+
 
 Route::controller(ReportController::class)->group(function(){
     Route::post("report","created_report");
